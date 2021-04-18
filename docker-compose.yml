@@ -1,0 +1,54 @@
+version: '3.1'
+
+services:
+  reverse-proxy:
+    container_name: reverse-proxy
+    image: traefik
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    ports:
+      - "80:80"
+      - "8080:8080"
+    command:
+      - --api.insecure=true
+      - --providers.docker=true
+      - --providers.docker.exposedbydefault=false
+      - --entrypoints.web.address=:80
+    restart: unless-stopped
+
+  postgres:
+    container_name: postgres
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: postgres
+      PGDATA: /data/postgres
+    volumes:
+      - postgres:/data/postgres
+    ports:
+      - "127.0.0.1:5432:5432"
+    restart: unless-stopped
+
+  next:
+    container_name: next
+    image: node
+    command: yarn dev
+    volumes:
+      - .:/usr/next:rw
+    working_dir: /usr/next
+    ports:
+      - "127.0.0.1:3000:3000"
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+    labels:
+      - traefik.http.routers.next-http.rule=Host(`scaffold.localhost`)
+      - traefik.http.routers.next-http.service=next
+      - traefik.http.routers.next-https.rule=Host(`scaffold.localhost`)
+      - traefik.http.routers.next-https.service=next
+      - traefik.http.routers.next-https.tls=true
+      - traefik.http.services.next.loadbalancer.server.port=3000
+    restart: unless-stopped
+
+volumes:
+  postgres: {}

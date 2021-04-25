@@ -1,6 +1,6 @@
 ## Getting Started
 
-First, start the docker containers up:
+First, start the docker containers:
 
 ```bash
 docker-compose up

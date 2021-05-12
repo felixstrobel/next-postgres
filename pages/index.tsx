@@ -7,15 +7,15 @@ export const getStaticProps: GetStaticProps = async () => {
         where: {
             name: "Felix"
         }
-    })
-    return {props: {feed}}
+    });
+    return {props: {feed}};
 }
 
 export default function Home(props) {
     return (
         <div className="w-100 h-screen grid place-items-center">
             <Head>
-                <title>Create Next App</title>
+                <title>Next Postgres Template</title>
                 <link rel="icon" href="/favicon.ico"/>
             </Head>
             <div>

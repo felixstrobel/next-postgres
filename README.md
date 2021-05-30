@@ -1,6 +1,12 @@
 ## Getting Started
 
-First, start the docker containers:
+First, install all the required dependencies:
+
+```bash
+yarn
+```
+
+Then start the docker containers:
 
 ```bash
 docker-compose up
